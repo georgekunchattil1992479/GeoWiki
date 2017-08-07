@@ -1,9 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-
-    <meta charset="utf-8">
+	<meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
@@ -33,15 +30,7 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     <style>
-         #map {
-        width: 1030px;
-        height: 400px;
-         padding: 5px;
-         margin-left: 15px;
-         max-width: 100%;
-      }
-      /* Optional: Makes the sample page fill the window. */
-    html, body {
+          html, body {
         height: 100%;
         margin: 0;
         padding: 0;
@@ -60,7 +49,7 @@
         padding-left: 10px;
       }
      /* #footer { position: fixed; bottom: 0px; }*/
-    #footer {
+     #footer {
             position: relative;
         margin-top: -180px;
             right: 0;
@@ -73,116 +62,27 @@
            width: 100%; clear: both;
            flex: 0 auto;
       }
+      /*
+      #footer {
+  position: relative;
+  margin-top: -180px;
+  /* negative value of footer height 
+  height: 180px;
+  clear: both;
+  background-color: red;
+}*/
+      #ajaxDiv.scroll{
+    	   width: 855px;
+          height: 500px;
+          overflow: scroll;
+      }
        
   </style>
+
 </head>
  
-<body>
- <!-- Navigation -->
-
-<script language="javascript" type="text/javascript" src="jquery-3.2.1.min.js"></script>
- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script language="javascript" type="text/javascript">
-
-// This example requires the Places library. Include the libraries=places
-      // parameter when you first load the API. For example:
-      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
-
-      var map;
-      var infowindow;
-
-      var loctn=null;
-      var lat=null;
-      var longit=null;
-
-      function initMap() {
-        //var loc = {lat: 8.8863134, lng: 76.5763282};
-         //lat: 8.8863134, lng: 76.5763282 value of kollam
-
-        map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 9,
-          center: {lat: -10.397, lng: 30.644}
-        });
-
-       var geocoder=new google.maps.Geocoder();
-       document.getElementById('submit').addEventListener("click", function(){
-          loctn=document.getElementById('address').value;
-          if (loctn=="") 
-          {
-            alert("Enter a valid location");
-          }
-          else
-          {
-            geocode(geocoder,loctn);
-          }
-
-       });
-      }
-
-
-      function geocode(geocoder,loctn) {
-        //var address = document.getElementById('address').value;
-        geocoder.geocode({'address': loctn}, function(results, status) {
-          if (status === 'OK') {
-            lat=results[0].geometry.location.lat();
-            longit=results[0].geometry.location.lng();
-            console.log(lat);
-            console.log(longit);
-           //alert(lat);
-           //alert(longit);
-            nearesthosp(lat,longit);
-            
-          } else {
-            alert('Geocode was not successful for the following reason: ' + status);
-          }
-        });
-      }
-
-      function nearesthosp(latitude, longitude){
-        var loc={lat:latitude, lng:longitude}
-        console.log(loc); //lat and longitude in textbox
-        map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 14,
-          center:loc
-        });
-        infowindow = new google.maps.InfoWindow();
-        var service = new google.maps.places.PlacesService(map);
-        service.nearbySearch({
-          location: loc,
-          radius: 600,
-          type: ['hospital']
-        }, callback);
-        
-
-      }
-
-      function callback(results, status) {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          for (var i = 0; i < results.length; i++) {
-            createMarker(results[i]);
-          }
-        }
-      }
-
-      function createMarker(place) {
-        var placeLoc = place.geometry.location;
-        var marker = new google.maps.Marker({
-          map: map,
-          position: place.geometry.location
-        });
-
-        google.maps.event.addListener(marker, 'click', function() {
-          infowindow.setContent(place.name);
-          infowindow.open(map, this);
-        });
-      }
-
-    </script>
-
-</head>
-
 <body id="page-top">
-
+    
     <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
         <div class="container-fluid" style="background-color: #2ECC71;">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -218,31 +118,24 @@
         <div class="container">
                 <div class="row col-lg-8 col-lg-offset-2 text-center">
                    <form>
-                      <div id="floating-panel" class="form-group">
-                        <input id="address" type="textbox" placeholder="Enter place" class="form-control">
-                        <input id="submit" type="button" value="Nearest hospitals" class="btn btn-default">
-                       </div>
+                     <div id="floating-panel" class="form-group ">
+                       <input id="address" type="textbox" class="form-control" placeholder="Enter place">
+                       <input type='button' onclick='makeCorsRequest()' value='GET WIKI' class="btn btn-default"/>
+                     </div>
                     </form>
                 </div>
-
-
         </div>
     </section>
 
-    <section id="hospital_map">
+    <section id="wiki">
           <div class="container">
-                  <center>
-                  <div id="map"></div>
-                   </center>
-                   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPrpz7gFnn6D7npDUJeQuZClWQ-KhD9U4&libraries=places&callback=initMap" async defer></script>
-                   <b> <l><h3>&nbsp;&nbsp;&nbsp;If you have any difficult in viewing hospitals in a location,  just zoom on the map</h3></l><b>
+             <center><div id='ajaxDiv' style="margin-left: 20px; margin-right: 20px; list-style: none; " class="row col-lg-8 col-lg-offset-2 scroll">Your result will display here</div></center>
+           
           
           </div>
-
-
     </section>
 
-   <div id="footer" class="container row col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center" style="background: #2ECC71;">
+      <div id="footer" class="container row col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center" style="background: #2ECC71;">
                
                     <!--<ul class="list-inline text-center">
                         <li>
@@ -274,6 +167,10 @@
                      <div class="copyright text-muted" style="color: white; font-size: 20px;"><strong>Webapp created by George Jacob & Powered by Hasura</strong></div>
         </div>
 
+   <!-- <script>
+$( "#footer" ).insertAfter( "#ajaxDiv" );
+</script> -->
+
     <!-- jQuery -->
     <script src="vendor/jquery/jquery.min.js"></script>
 
@@ -288,6 +185,37 @@
     <!-- Theme JavaScript -->
     <script src="js/creative.min.js"></script>
 
-</body>
+    <script language="javascript" type="text/javascript" src="jquery-3.2.1.min.js"></script>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script language="javascript" type="text/javascript">
 
+<!-- 
+//Browser Support Code
+function makeCorsRequest() {
+        var addr=document.getElementById("address").value;
+$.ajax({
+        type: "GET",
+        url: "https://en.wikipedia.org/w/api.php?action=parse&page="+addr+"&prop=text&&format=json&callback=?",
+        //contentType: "application/json; charset=utf-8",
+		contentType: "json",
+        async: false,
+        dataType: "json",
+        success: function (data, textStatus, jqXHR) {
+		       console.log(data);
+			
+			  console.log(data.parse.text["*"]);
+			$("#ajaxDiv").html(data.parse.text["*"]);
+ 
+        },
+        error: function (errorMessage) 
+		{
+		   alert(errorMessage);
+        }
+    });
+
+}
+//-->
+</script>
+
+</body>
 </html>
